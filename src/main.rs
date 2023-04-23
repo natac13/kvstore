@@ -44,7 +44,11 @@ impl Database {
         // this is the same as the above code
         // where we bind the result to contents and bubble up the error up to the caller
         let mut map = HashMap::new();
-        // std::path::PathBuf::from("kv.db");
+        // check if the file exists and if not create it first
+        let file_exists = std::path::PathBuf::from("kv.db");
+        if !file_exists.exists() {
+            std::fs::File::create("kv.db")?;
+        }
         let contents = std::fs::read_to_string("kv.db")?;
         for line in contents.lines() {
             let (key, value) = line.split_once('\t').expect("Corrupt database");
